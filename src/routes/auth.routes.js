@@ -1,5 +1,6 @@
 const express = require('express');
 const userModel = require('../models/user.model');
+const jwt = require('jsonwebtoken');
 
 const authRouter = express.Router();
 
@@ -20,9 +21,18 @@ authRouter.post('/sign-up', async (req, res) => {
         password
     });
 
+    const token = jwt.sign(
+        {
+            id: user._id,
+            email: user.email
+        },
+        process.env.JWT_SECRET
+    );
+
     res.status(201).json({
         message: "User registered successfully.",
-        user
+        user,
+        token
     });
 });
 
